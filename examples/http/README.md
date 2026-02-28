@@ -58,3 +58,17 @@ Let's try out one of the tools, like `everything:echo`.
 ![Echo](./img/echo.png)
 
 That worked! The gateway was able to proxy the request to the `everything` tool and return the response.
+## IP-Based Authorization
+
+The `ip-rules` route demonstrates CEL-based IP authorization. This is
+useful for restricting admin endpoints to known CIDR ranges.
+
+```yaml
+authorization:
+  rules:
+  - |
+    cidr("10.0.0.0/8").containsIP(source.address)
+```
+
+Combine with JWT auth for defense-in-depth. See `examples/authorization/`
+for more patterns.
