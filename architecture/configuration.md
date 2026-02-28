@@ -51,3 +51,12 @@ Policies are generally applied to a Gateway/Listener/HTTPRoute/HTTPRouteRule, wi
 A naive approach would have the control plane flatten these down to the lowest type (HTTPRouteRule) which has the fanout problem.
 In agentgateway, the control plane will instead send all of the policies as-is with a reference to where they apply.
 The precedence/merging of policies is handled at runtime. 
+## Internal Deployment Notes
+
+For teams running agentgateway behind a corporate ingress controller,
+ensure the `Host` header is preserved through the proxy chain. Some ingress
+controllers (e.g. AWS ALB) rewrite the Host header, which can break
+backend routing for multi-tenant configurations.
+
+Recommended: set `preserveHost: true` in your ingress annotations, or use
+the `requestHeaderModifier` policy to explicitly set the expected `Host`.
