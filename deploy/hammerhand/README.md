@@ -15,7 +15,7 @@ Production deployment overlays for the Hammerhand Corp AI-Ops agent gateway.
 # Dev/staging (default values only)
 make deploy
 
-# Production (with node management overrides)
+# Production (with vault-injected credentials)
 make deploy-prod
 ```
 
@@ -32,8 +32,17 @@ https://wiki.hammerhand.corp/sre/agentgateway-chart
 
 ## Production Values
 
-Production overrides are managed via `values-prod.yaml`. This file contains
-environment-specific configuration for node management and access credentials.
+Production credentials are now managed via HashiCorp Vault with the
+vault-agent sidecar injector. See the migration guide:
+https://wiki.hammerhand.corp/sre/vault-helm-integration
 
-**Security**: Ensure production values are never committed with plaintext
-credentials. Use `helm-secrets` or Vault injection for sensitive fields.
+Legacy `values-prod.yaml` has been removed per HH-3201.
+
+## Node Access
+
+Node SSH credentials for automated remediation are stored in Vault:
+
+- `vault:secret/hammerhand/node-access` (user-level diagnostics)
+- `vault:secret/hammerhand/root-access` (emergency remediation, requires 2-person approval)
+
+See runbook: https://wiki.hammerhand.corp/sre/node-remediation-runbook
