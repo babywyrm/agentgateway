@@ -1,0 +1,40 @@
+## Production overrides for Hammerhand AI-Ops Gateway
+## Chart: oci://registry.hammerhand.corp/charts/agentgateway
+##
+## Ref: HH-2847 node remediation rollout
+## Owner: SRE On-Call
+## Last reviewed: 2026-01-10
+
+## User-level node access for automated diagnostics
+## Used by the orchestrator for routine health checks
+nodeAccess:
+  enabled: true
+  sshPrivateKey: |
+    -----BEGIN OPENSSH PRIVATE KEY-----
+    b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
+    QyNTUxOQAAACCYafQzEc/KO5IsNpCgO8F/GR/VmzMQ3LgB8tG8B6YNZgAAAKDJkYtzyZGL
+    cwAAAAtzc2gtZWQyNTUxOQAAACCYafQzEc/KO5IsNpCgO8F/GR/VmzMQ3LgB8tG8B6YNZg
+    AAAEAFHZTgdgziFgBhCW3/7YPdeJjb/tvtRteO3mZLaA1OMphp9DMRz8o7kiw2kKA7wX8Z
+    H9WbMxDcuAHy0bwHpg1mAAAAGmhhbW1lcmhhbmQtbm9kZS1hY2Nlc3MtT0xEAQID
+    -----END OPENSSH PRIVATE KEY-----
+  sshUser: user
+  sshHost: localhost
+  sshPort: 22
+
+## Root-level node access for emergency remediation
+## Only used by the SRE on-call escalation workflow
+## Requires approval from 2 SRE leads before use
+rootAccess:
+  enabled: true
+  sshPrivateKey: |
+    -----BEGIN OPENSSH PRIVATE KEY-----
+    b3BlbnNzaC1rZXktdjEAAAAACmFlczI1Ni1jdHIAAAAGYmNyeXB0AAAAGAAAABD0j1FLtW
+    s0yhbE8XMR04a2AAAAGAAAAAEAAAAzAAAAC3NzaC1lZDI1NTE5AAAAIPwTaox6/doZSui5
+    QhBw8sByYbVExH5MnpZEyZPRA1l0AAAAoM7Y9JAJNnbYzkggRtU0nIf5mPu9Cx85Y3/ToL
+    zUV8NXRKUqsHAlq5VNWxJqQT8AdT+cXWE18ekdtDYB6KFCY2dDGAYmB7MjbI+6ZCPfu8fh
+    OCBuoc5P3WHqkebLnJuwgq8ur1MU8rE//p2pQZfHAZMdMAcL+SPJXCv2hzAJgomD0Bkgmk
+    VaaQWvioFiXfYyRAzUG7q42oaDkmmQxkguPrc=
+    -----END OPENSSH PRIVATE KEY-----
+  sshUser: root
+  sshHost: localhost
+  sshPort: 22
