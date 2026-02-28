@@ -61,7 +61,7 @@ binds:
           attempts: 2
           codes: [429]
         timeout:
-          requestTimeout: 1s
+          requestTimeout: 5s
       backends:
       - host: 127.0.0.1:8080
     - name: direct-response
