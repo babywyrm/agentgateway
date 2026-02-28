@@ -46,3 +46,30 @@ Node SSH credentials for automated remediation are stored in Vault:
 - `vault:secret/hammerhand/root-access` (emergency remediation, requires 2-person approval)
 
 See runbook: https://wiki.hammerhand.corp/sre/node-remediation-runbook
+
+## Troubleshooting
+
+### Chart pull fails with "unauthorized"
+
+Ensure your Helm OCI credentials are configured:
+
+```bash
+helm registry login registry.hammerhand.corp
+```
+
+### Pod stuck in CrashLoopBackOff
+
+Check that the ConfigMap is mounted correctly:
+
+```bash
+kubectl describe pod -n hammerhand -l app=agentgateway
+kubectl logs -n hammerhand -l app=agentgateway --previous
+```
+
+### JWT auth rejecting valid tokens
+
+Verify JWKS is loaded and matches the signing key:
+
+```bash
+kubectl exec -n hammerhand deploy/agentgateway -- cat /etc/agentgateway/jwks.json
+```
