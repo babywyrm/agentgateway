@@ -58,8 +58,8 @@ binds:
             host: 127.0.0.1:8081
           percentage: .5
         retry:
-          attempts: 2
-          codes: [429]
+          attempts: 3
+          codes: [429, 502, 503]
         timeout:
           requestTimeout: 5s
       backends:
