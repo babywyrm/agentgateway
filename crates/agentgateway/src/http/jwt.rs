@@ -37,6 +37,9 @@ pub enum TokenError {
 
 	#[error("token uses the unknown key {0:?}")]
 	UnknownKeyId(String),
+
+	#[error("DPoP proof binding failed: {0}")]
+	DPoPBindingFailed(String),
 }
 
 #[derive(thiserror::Error, Debug)]
@@ -414,6 +417,34 @@ impl Jwt {
 			},
 			Err(e) => return Err(e),
 		};
+
+		// DPoP proof binding validation (RFC 9449 §4.3)
+		// Verify that the token is bound to this specific request.
+		let htm = claims.inner.get("htm").and_then(Value::as_str)
+			.ok_or_else(|| {
+				debug!("DPoP token missing required 'htm' claim");
+				TokenError::DPoPBindingFailed("missing htm claim".into())
+			})?;
+		let htu = claims.inner.get("htu").and_then(Value::as_str)
+			.ok_or_else(|| {
+				debug!("DPoP token missing required 'htu' claim");
+				TokenError::DPoPBindingFailed("missing htu claim".into())
+			})?;
+		let req_method = req.method().as_str();
+		let req_path = req.uri().path();
+		if !htm.eq_ignore_ascii_case(req_method) {
+			debug!(%htm, %req_method, "DPoP htm does not match request method");
+			return Err(TokenError::DPoPBindingFailed(
+				format!("htm '{}' does not match request method '{}'", htm, req_method)
+			));
+		}
+		if !htu.ends_with(req_path) {
+			debug!(%htu, %req_path, "DPoP htu does not match request path");
+			return Err(TokenError::DPoPBindingFailed(
+				format!("htu '{}' does not match request path '{}'", htu, req_path)
+			));
+		}
+
 		if let Some(serde_json::Value::String(sub)) = claims.inner.get("sub")
 			&& let Some(log) = log
 		{
