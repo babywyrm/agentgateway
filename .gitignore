@@ -5,6 +5,11 @@
 .DS_Store
 .venv
 *.local
+*.log
+*.swp
+*.swo
 var/
+dist/
+node_modules/
 controller/_output
 controller/_test
