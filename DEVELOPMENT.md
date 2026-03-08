@@ -19,6 +19,7 @@ This page contains instructions on how to run everything locally.
 Requirements:
 - Rust 1.86+
 - npm 10+
+- `cargo-deny` (for license/advisory checks)
 
 Build the agentgateway UI:
 
@@ -41,5 +42,31 @@ Run the agentgateway binary:
 ```bash
 ./target/release/agentgateway
 ```
+
 Open your browser and navigate to `http://localhost:15000/ui` to see the agentgateway UI.
+
+## Debugging
+
+Enable verbose logging with the `RUST_LOG` environment variable:
+
+```bash
+RUST_LOG=agentgateway=debug,tower_http=trace ./target/release/agentgateway
+```
+
+For JWT/auth issues specifically:
+
+```bash
+RUST_LOG=agentgateway::http::jwt=trace ./target/release/agentgateway
+```
+
+## Pre-commit Checks
+
+Run these before opening a PR:
+
+```bash
+cargo fmt --all
+cargo clippy --all -- -D warnings
+cargo deny check
+cargo test --all
+```
 
